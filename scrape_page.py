@@ -29,3 +29,4 @@ if response.ok:
             infos['number_available'] = [int(s) for s in re.findall(r'-?\d+\.?\d*', row.find('td').text)]
 
 print(infos)
+print('test')
