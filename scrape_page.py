@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 import requests
 from bs4 import BeautifulSoup
 import re
+import sys
 
 #Url du site web
 product_page_url = "http://books.toscrape.com/catalogue/tipping-the-velvet_999/index.html"
@@ -12,9 +15,10 @@ infos = {}
 infos['product_page_url'] = product_page_url
 
 if response.ok:
+    response.encoding = 'UTF-8'
     soup = BeautifulSoup(response.text, 'html.parser')
-    upc = soup.find_all('tr')
-    for row in upc:
+    lines = soup.find_all('tr')
+    for row in lines:
         if row.find('th', text = 'UPC'):
             infos['UPC'] = row.find('td').text
         if row.find('th', text = 'Price (excl. tax)'):
