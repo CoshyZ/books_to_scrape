@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
+
 def category(url_category, list_of_book):
     #Récupérer le contenu de l'url
     try:

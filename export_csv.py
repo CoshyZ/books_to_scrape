@@ -1,9 +1,11 @@
 import csv
+
 def export_csv(book_infos, file):
     #Déclaration de l'en-tête CSV
     header = ['product_page_url', 'universal_product_code', 'title', \
               'price_including_tax', 'price_excluding_tax', 'number_available', \
               'product_description', 'category', 'review_rating', 'image_url']
+    file = file + '/' + file + '.csv'
 
     try:
         with open(file):

@@ -1,8 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+from img import download_image
 
-def scrape_book_infos(url):
+def scrape_book_infos(url, name_category):
     #Récupérer le contenu de l'url
     try:
         response = requests.get(url)
@@ -30,7 +31,11 @@ def scrape_book_infos(url):
             infos['product_description'] = ''
         infos['category'] = soup.find('a', text='Books').findNext('a').text
         infos['review_rating'] = soup.find('p', {'class' : 'star-rating'}).attrs['class'][1]
-        infos['image_url'] = soup.find('img').attrs['src'].replace('../../','http://books.toscrape.com/')
+        infos['image_url'] = soup.find('div', class_='item active').findNext('img').attrs['src'].replace('../../','http://books.toscrape.com/')
+
+        path = name_category + '/'
+        #Télécharger l'image du livre
+        download_image(infos['image_url'], path + infos['title'].replace(' ', '_'))
     else:
         print("L'url spécifié est incorrecte")
         exit(1)
