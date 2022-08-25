@@ -16,4 +16,4 @@ pip install -r requirements.txt
 python main.py
 ```
 
-**You'll see in output all the "Category_name.csv" files.**
+**You'll see in output one folder per category and inside this folder the "Category_name.csv" file + all "title_books".jpg files for each book from the catgory.**
