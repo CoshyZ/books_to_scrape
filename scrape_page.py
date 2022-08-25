@@ -1,31 +1,36 @@
-# -*- coding: utf-8 -*-
-
 import requests
 from bs4 import BeautifulSoup
 import re
-import sys
 
 #Url du site web
-product_page_url = "http://books.toscrape.com/catalogue/tipping-the-velvet_999/index.html"
+#product_page_url = "http://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
 
-#Récupérer le contenu de l'url
-response = requests.get(product_page_url)
+def scrape_book_infos(url):
+    #Récupérer le contenu de l'url
+    response = requests.get(url)
+    #Le dictionnaire contenant les infos
+    infos = {}
+    infos['product_page_url'] = url
 
-infos = {}
-infos['product_page_url'] = product_page_url
+    #Methode Fancy pour récupérer les datas et les classer ensuite dans le dictionnaire
+    if response.ok:
+        response.encoding = 'UTF-8'
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-if response.ok:
-    response.encoding = 'UTF-8'
-    soup = BeautifulSoup(response.text, 'html.parser')
-    lines = soup.find_all('tr')
-    for row in lines:
-        if row.find('th', text = 'UPC'):
-            infos['UPC'] = row.find('td').text
-        if row.find('th', text = 'Price (excl. tax)'):
-            infos['price_excluding_tax'] = row.find('td').text
-        if row.find('th', text = 'Price (incl. tax)'):
-            infos['price_including_tax'] = row.find('td').text
-        if row.find('th', text = 'Availability'):
-            infos['number_available'] = [int(s) for s in re.findall(r'-?\d+\.?\d*', row.find('td').text)]
+        infos['UPC'] = soup.find(text='UPC').findNext('td').text
+        infos['title'] = soup.find('li', class_='active').text
+        infos['price_including_tax'] = soup.find(text='Price (incl. tax)').findNext('td').text
+        infos['price_excluding_tax'] = soup.find(text='Price (excl. tax)').findNext('td').text
+        infos['number_available'] = [int(s) for s in re.findall(r'-?\d+\.?\d*', soup.find(text='Availability').findNext('td').text)]
+        infos['product_description'] = soup.find(text='Product Description').findNext('p').text
+        infos['category'] = soup.find('a', text='Books').findNext('a').text
+        infos['review_rating'] = soup.find('p', {'class' : 'star-rating'}).attrs['class'][1]
+        infos['image_url'] = soup.find('img').attrs['src'].replace('../../','http://books.toscrape.com/')
+    else:
+        print("L'url spécifié est incorrecte")
+        exit(1)
+    return infos
 
-print(infos)
+
+book_infos = scrape_book_infos("http://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html")
+print(book_infos)
