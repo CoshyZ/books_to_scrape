@@ -7,7 +7,12 @@ import re
 
 def scrape_book_infos(url):
     #Récupérer le contenu de l'url
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except IOError:
+        print("Invalid URL")
+        exit(1)
+
     #Le dictionnaire contenant les infos
     infos = {}
     infos['product_page_url'] = url
@@ -17,7 +22,7 @@ def scrape_book_infos(url):
         response.encoding = 'UTF-8'
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        infos['UPC'] = soup.find(text='UPC').findNext('td').text
+        infos['universal_product_code'] = soup.find(text='UPC').findNext('td').text
         infos['title'] = soup.find('li', class_='active').text
         infos['price_including_tax'] = soup.find(text='Price (incl. tax)').findNext('td').text
         infos['price_excluding_tax'] = soup.find(text='Price (excl. tax)').findNext('td').text
@@ -30,7 +35,3 @@ def scrape_book_infos(url):
         print("L'url spécifié est incorrecte")
         exit(1)
     return infos
-
-
-book_infos = scrape_book_infos("http://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html")
-print(book_infos)
