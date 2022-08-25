@@ -1,5 +1,5 @@
 # books_to_scrape
-##**Openclassrooms Project 2**
+## **Openclassrooms Project 2**
 
 Step 1 : Build & Active the virtual env
 python3 -m venv env
