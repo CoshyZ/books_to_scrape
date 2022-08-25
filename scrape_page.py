@@ -35,7 +35,7 @@ def scrape_book_infos(url, name_category):
 
         path = name_category + '/'
         #Télécharger l'image du livre
-        download_image(infos['image_url'], path + infos['title'].replace(' ', '_'))
+        download_image(infos['image_url'], path + infos['title'].replace(' ', '_').replace(',','').replace('.','').replace('#','').replace(':','').replace('/', ' '))
     else:
         print("L'url spécifié est incorrecte")
         exit(1)
